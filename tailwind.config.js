@@ -3,8 +3,11 @@ module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
-      fontFamily: {
-        SFProDisplay: ['SF Pro Display', 'sans-serif']
+      colors: {
+        main: '#D0011B',
+        footerTheme: '#fbfbfb',
+        footerText: '#0000008a',
+        footerInfoText: '#000000A6'
       }
     }
   },
