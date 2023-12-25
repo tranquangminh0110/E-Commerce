@@ -5,7 +5,7 @@ export default function RegisterHeader() {
 
   return (
     <header className='py-3'>
-      <div className='mx-auto max-w-[1200px] px-4'>
+      <div className='mx-auto max-w-[1200px] px-4 '>
         <nav className='flex items-center justify-between'>
           <div className='flex items-center'>
             <Link to='/'>

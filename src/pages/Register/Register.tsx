@@ -1,15 +1,32 @@
 import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import HiddenEye from 'src/components/Icons/HiddenEye'
 import QRLogin from 'src/components/Icons/QRLogin'
-import VisibleEye from 'src/components/Icons/VisibleEye'
+import { rules } from 'src/utils/rules'
+
+interface FormData {
+  email: string
+  password: string
+  confirm_password: string
+}
 
 export default function Register() {
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormData>()
+
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    console.log(data)
+  }
 
   const handleVisiblePassword = () => {
     setVisiblePassword((prevState) => !prevState)
   }
+  console.log('Errors', errors)
+
   return (
     <div className='bg-main'>
       <div className='mx-auto max-w-7xl px-4'>
@@ -18,7 +35,7 @@ export default function Register() {
             <img className='h-[450px] w-[450px]' src='/src/assets/BackGroundTheme.png' alt='' />
           </div>
           <div className='lg:col-span-2 lg:col-start-4'>
-            <form className='rounded bg-white px-8 py-10 shadow-sm'>
+            <form className='rounded bg-white px-8 py-10 shadow-sm' onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className='flex items-center justify-between'>
                 <div className='text-2xl'>Đăng ký</div>
                 <div className='flex items-center space-x-3'>
@@ -32,32 +49,41 @@ export default function Register() {
               <div className='mt-8'>
                 <input
                   type='email'
-                  name='email'
                   className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
                   placeholder='Email/Số điện thoại/Tên đăng nhập'
+                  {...register('email', rules.email)}
                 />
-                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'></div>
+                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'>{errors.email?.message}</div>
               </div>
               <div className='relative mt-2'>
                 <input
-                  type={!visiblePassword ? 'password' : 'text'}
-                  name='password'
+                  type={visiblePassword ? 'test' : 'password'}
                   className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
                   placeholder='Mật khẩu'
+                  {...register('password', rules.password)}
                 />
-                <button type='button' className='absolute right-2 top-3.5' onClick={handleVisiblePassword}>
-                  {!visiblePassword ? <HiddenEye /> : <VisibleEye />}
-                </button>
-                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'></div>
+                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'>{errors.password?.message}</div>
               </div>
               <div className='mt-2'>
                 <input
-                  type='password'
-                  name='confirm_password'
+                  type={visiblePassword ? 'test' : 'password'}
                   className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
                   placeholder='Xác nhận mật khẩu'
+                  {...register('confirm_password', rules.confirm_password)}
                 />
-                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'></div>
+                <div className='flex items-center justify-between'>
+                  <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'>{errors.confirm_password?.message}</div>
+                  <div className='flex items-center space-x-3 text-sm'>
+                    <label htmlFor='visibleCheckbox'>Hiện mật khẩu</label>
+                    <input
+                      id='visibleCheckbox'
+                      className='accent-main'
+                      checked={visiblePassword}
+                      onChange={handleVisiblePassword}
+                      type='checkbox'
+                    />
+                  </div>
+                </div>
               </div>
               <div className='mt-4'>
                 <button

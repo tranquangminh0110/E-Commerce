@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import { useState, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import HiddenEye from 'src/components/Icons/HiddenEye'
 import QRLogin from 'src/components/Icons/QRLogin'
@@ -6,10 +7,15 @@ import VisibleEye from 'src/components/Icons/VisibleEye'
 
 export default function Login() {
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false)
-
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const handleVisiblePassword = () => {
     setVisiblePassword((prevState) => !prevState)
   }
+
+  const handleVisibleQRLogin = () => {
+    setIsOpen((prevState) => !prevState)
+  }
+
   return (
     <div className='bg-main'>
       <div className='mx-auto max-w-7xl px-4'>
@@ -26,7 +32,7 @@ export default function Login() {
                     <div className='text-sm font-bold text-[#FFBF00]'>Đăng nhập với mã QR</div>
                     <div className='top-50 absolute right-[-7px] h-[12px] w-[12px] rotate-45 border border-b-0 border-l-0 border-r-2 border-t-2 border-[#FFBF00] bg-[#FEFAEC]'></div>
                   </div>
-                  <QRLogin />
+                  <QRLogin handleVisibleQRLogin={handleVisibleQRLogin} />
                 </div>
               </div>
               <div className='mt-8'>
@@ -46,7 +52,7 @@ export default function Login() {
                   placeholder='Mật khẩu'
                 />
                 <button type='button' className='absolute right-2 top-3.5' onClick={handleVisiblePassword}>
-                  {!visiblePassword ? <HiddenEye /> : <VisibleEye />}
+                  {visiblePassword ? <VisibleEye /> : <HiddenEye />}
                 </button>
                 <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'></div>
               </div>
@@ -124,6 +130,55 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as='div' className='relative z-10' onClose={handleVisibleQRLogin}>
+          <Transition.Child
+            as={Fragment}
+            enter='ease-out duration-300'
+            enterFrom='opacity-0'
+            enterTo='opacity-100'
+            leave='ease-in duration-200'
+            leaveFrom='opacity-100'
+            leaveTo='opacity-0'
+          >
+            <div className='fixed inset-0 bg-black/25' />
+          </Transition.Child>
+
+          <div className='fixed inset-0 overflow-y-auto'>
+            <div className='flex min-h-full items-center justify-center p-4 text-center'>
+              <Transition.Child
+                as={Fragment}
+                enter='ease-out duration-300'
+                enterFrom='opacity-0 scale-95'
+                enterTo='opacity-100 scale-100'
+                leave='ease-in duration-200'
+                leaveFrom='opacity-100 scale-100'
+                leaveTo='opacity-0 scale-95'
+              >
+                <Dialog.Panel className='w-full max-w-[350px] transform flex-col overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all'>
+                  <div className='flex w-full justify-center'>
+                    <img className='h-[100px] w-[100px]' src='/src/assets/Update_Logo.png' alt='' />
+                  </div>
+                  <div className='mt-2 text-center'>
+                    <p className='text-sm text-gray-500'>Tính năng này đang được chúng tôi phát triển</p>
+                    <p className='text-sm text-gray-500'>vui lòng thử lại sau...</p>
+                  </div>
+
+                  <div className='mt-4'>
+                    <button
+                      type='button'
+                      className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                      onClick={handleVisibleQRLogin}
+                    >
+                      Đóng
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   )
 }
