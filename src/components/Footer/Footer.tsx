@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom'
 
 export default function Footer() {
   return (
-    <footer className='bg-footerTheme text-footerText py-12'>
-      <div className='mx-auto max-w-[1200px] px-4'>
-        <div className='text-footerInfoText mb-8 grid grid-cols-1 text-xs lg:grid-cols-5'>
+    <footer className='bg-footerTheme py-12 text-footerText'>
+      <div className='container'>
+        <div className='mb-8 grid grid-cols-1 text-xs text-footerInfoText lg:grid-cols-5'>
           <div className='flex flex-col space-y-2 lg:col-span-1'>
             <div className='mb-2 font-bold text-black'>CHĂM SÓC KHÁC HÀNG</div>
             <Link to='https://help.shopee.vn/portal'>Trung Tâm Trợ Giúp</Link>

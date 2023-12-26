@@ -6,19 +6,19 @@ import QRLogin from 'src/components/Icons/QRLogin'
 import VisibleEye from 'src/components/Icons/VisibleEye'
 
 export default function Login() {
-  const [visiblePassword, setVisiblePassword] = useState<boolean>(false)
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isVisiblePassword, setIsVisiblePassword] = useState<boolean>(false)
+  const [isVisibleQRLogin, setIsVisibleQRLogin] = useState<boolean>(false)
   const handleVisiblePassword = () => {
-    setVisiblePassword((prevState) => !prevState)
+    setIsVisiblePassword((prevState) => !prevState)
   }
 
   const handleVisibleQRLogin = () => {
-    setIsOpen((prevState) => !prevState)
+    setIsVisibleQRLogin((prevState) => !prevState)
   }
 
   return (
     <div className='bg-main'>
-      <div className='mx-auto max-w-7xl px-4'>
+      <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:px-10 lg:py-32'>
           <div className='hidden items-center justify-center lg:visible lg:col-span-3 lg:flex'>
             <img className='h-[450px] w-[450px]' src='/src/assets/BackGroundTheme.png' alt='' />
@@ -46,20 +46,20 @@ export default function Login() {
               </div>
               <div className='relative mt-2'>
                 <input
-                  type={!visiblePassword ? 'password' : 'text'}
+                  type={!isVisiblePassword ? 'password' : 'text'}
                   name='password'
                   className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
                   placeholder='Mật khẩu'
                 />
                 <button type='button' className='absolute right-2 top-3.5' onClick={handleVisiblePassword}>
-                  {visiblePassword ? <VisibleEye /> : <HiddenEye />}
+                  {isVisiblePassword ? <VisibleEye /> : <HiddenEye />}
                 </button>
                 <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'></div>
               </div>
               <div className='mt-4'>
                 <button
                   type='submit'
-                  className='bg-main hover:bg-main/80 w-full rounded-sm px-2 py-4 text-center text-sm uppercase text-white'
+                  className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80'
                 >
                   Đăng nhập
                 </button>
@@ -68,10 +68,10 @@ export default function Login() {
                 <Link to='#'>Quên mật khẩu</Link>
                 <Link to='#'>Đăng nhập với SMS</Link>
               </div>
-              <div className='text-footerInfoText/40 mt-2 flex items-center space-x-3'>
-                <div className='border-footerInfoText/40 h-[2px] w-full border-b'></div>
+              <div className='mt-2 flex items-center space-x-3 text-footerInfoText/40'>
+                <div className='h-[2px] w-full border-b border-footerInfoText/40'></div>
                 <div>Hoặc</div>
-                <div className='border-footerInfoText/40 h-[2px] w-full border-b'></div>
+                <div className='h-[2px] w-full border-b border-footerInfoText/40'></div>
               </div>
               <div className='mt-3 flex space-x-7'>
                 <div className='flex h-10 w-full items-center justify-center  space-x-2 rounded-sm border hover:cursor-pointer hover:bg-gray-100/35'>
@@ -130,7 +130,7 @@ export default function Login() {
           </div>
         </div>
       </div>
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={isVisibleQRLogin} as={Fragment}>
         <Dialog as='div' className='relative z-10' onClose={handleVisibleQRLogin}>
           <Transition.Child
             as={Fragment}

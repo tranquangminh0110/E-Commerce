@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import QRLogin from 'src/components/Icons/QRLogin'
-import { rules } from 'src/utils/rules'
+import Input from 'src/components/Input'
+import { ruleFunction } from 'src/utils/rules'
 
 interface FormData {
   email: string
@@ -15,9 +16,11 @@ export default function Register() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors }
   } = useForm<FormData>()
 
+  const rules = ruleFunction(getValues)
   const onSubmit: SubmitHandler<FormData> = (data) => {
     console.log(data)
   }
@@ -25,11 +28,11 @@ export default function Register() {
   const handleVisiblePassword = () => {
     setVisiblePassword((prevState) => !prevState)
   }
-  console.log('Errors', errors)
+  // console.log('Errors', errors)
 
   return (
     <div className='bg-main'>
-      <div className='mx-auto max-w-7xl px-4'>
+      <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:px-10 lg:py-32'>
           <div className='hidden items-center justify-center lg:visible lg:col-span-3 lg:flex'>
             <img className='h-[450px] w-[450px]' src='/src/assets/BackGroundTheme.png' alt='' />
@@ -46,49 +49,50 @@ export default function Register() {
                   <QRLogin />
                 </div>
               </div>
-              <div className='mt-8'>
-                <input
-                  type='email'
-                  className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
-                  placeholder='Email/Số điện thoại/Tên đăng nhập'
-                  {...register('email', rules.email)}
-                />
-                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'>{errors.email?.message}</div>
-              </div>
-              <div className='relative mt-2'>
-                <input
-                  type={visiblePassword ? 'test' : 'password'}
-                  className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
-                  placeholder='Mật khẩu'
-                  {...register('password', rules.password)}
-                />
-                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'>{errors.password?.message}</div>
-              </div>
-              <div className='mt-2'>
-                <input
-                  type={visiblePassword ? 'test' : 'password'}
-                  className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
-                  placeholder='Xác nhận mật khẩu'
-                  {...register('confirm_password', rules.confirm_password)}
-                />
-                <div className='flex items-center justify-between'>
-                  <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'>{errors.confirm_password?.message}</div>
-                  <div className='flex items-center space-x-3 text-sm'>
-                    <label htmlFor='visibleCheckbox'>Hiện mật khẩu</label>
-                    <input
-                      id='visibleCheckbox'
-                      className='accent-main'
-                      checked={visiblePassword}
-                      onChange={handleVisiblePassword}
-                      type='checkbox'
-                    />
-                  </div>
+              <Input
+                className='mt-8'
+                type='email'
+                name='email'
+                register={register}
+                errorMessage={errors.email?.message}
+                placeholder='Email/Số điện thoại/Tên đăng nhập'
+                rules={rules.email}
+              />
+              <Input
+                className='relative mt-2'
+                type={visiblePassword ? 'test' : 'password'}
+                name='password'
+                register={register}
+                autoComplete='on'
+                errorMessage={errors.password?.message}
+                placeholder='Mật khẩu'
+                rules={rules.password}
+              />
+              <Input
+                name='confirm_password'
+                register={register}
+                type={visiblePassword ? 'test' : 'password'}
+                className='mt-2'
+                autoComplete='on'
+                errorMessage={errors.confirm_password?.message}
+                placeholder='Xác nhận mật khẩu'
+                rules={rules.confirm_password}
+              >
+                <div className='flex items-center space-x-3 text-sm'>
+                  <label htmlFor='visibleCheckbox'>Hiện mật khẩu</label>
+                  <input
+                    id='visibleCheckbox'
+                    className='accent-main'
+                    checked={visiblePassword}
+                    onChange={handleVisiblePassword}
+                    type='checkbox'
+                  />
                 </div>
-              </div>
+              </Input>
               <div className='mt-4'>
                 <button
                   type='submit'
-                  className='bg-main hover:bg-main/80 w-full rounded-sm px-2 py-4 text-center text-sm uppercase text-white'
+                  className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80'
                 >
                   Đăng ký
                 </button>
@@ -97,10 +101,10 @@ export default function Register() {
                 <Link to='#'>Quên mật khẩu</Link>
                 <Link to='#'>Đăng nhập với SMS</Link>
               </div>
-              <div className='text-footerInfoText/40 mt-2 flex items-center space-x-3'>
-                <div className='border-footerInfoText/40 h-[2px] w-full border-b'></div>
+              <div className='mt-2 flex items-center space-x-3 text-footerInfoText/40'>
+                <div className='h-[2px] w-full border-b border-footerInfoText/40'></div>
                 <div>Hoặc</div>
-                <div className='border-footerInfoText/40 h-[2px] w-full border-b'></div>
+                <div className='h-[2px] w-full border-b border-footerInfoText/40'></div>
               </div>
               <div className='mt-3 flex space-x-7'>
                 <div className='flex h-10 w-full items-center justify-center  space-x-2 rounded-sm border hover:cursor-pointer hover:bg-gray-100/35'>

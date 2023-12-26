@@ -3,11 +3,11 @@ interface Props {
 }
 
 export default function QRLogin({ handleVisibleQRLogin }: Props) {
-  const handleProps = () => {
+  const handleOpenQRLogin = () => {
     handleVisibleQRLogin?.()
   }
   return (
-    <button type='button' onClick={handleProps}>
+    <button type='button' onClick={handleOpenQRLogin}>
       <svg width={40} height={40} fill='none' className='Gcv8A_'>
         <g clipPath='url(#clip0)'>
           <path

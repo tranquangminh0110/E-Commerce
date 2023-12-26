@@ -5,7 +5,7 @@ export default function RegisterHeader() {
 
   return (
     <header className='py-3'>
-      <div className='mx-auto max-w-[1200px] px-4 '>
+      <div className='container'>
         <nav className='flex items-center justify-between'>
           <div className='flex items-center'>
             <Link to='/'>
@@ -14,7 +14,7 @@ export default function RegisterHeader() {
             <div className='ml-2 mt-1 text-xl lg:text-2xl'>{isRegister ? 'Đăng ký' : 'Đăng nhập'}</div>
           </div>
           <Link to='https://help.shopee.vn/portal' target='_blank'>
-            <div className='text-main text-sm'>Bạn cần giúp đỡ?</div>
+            <div className='text-sm text-main'>Bạn cần giúp đỡ?</div>
           </Link>
         </nav>
       </div>
