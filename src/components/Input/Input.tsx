@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HTMLInputTypeAttribute } from 'react'
-import { RegisterOptions, UseFormRegister } from 'react-hook-form'
+import { UseFormRegister } from 'react-hook-form'
 
 interface Props {
   type: HTMLInputTypeAttribute
@@ -9,7 +9,6 @@ interface Props {
   className?: string
   name: string
   register: UseFormRegister<any>
-  rules?: RegisterOptions
   children?: React.ReactNode
   autoComplete?: string
 }
@@ -22,8 +21,7 @@ export default function Input({
   type,
   className,
   errorMessage,
-  placeholder,
-  rules
+  placeholder
 }: Props) {
   const isChildren = Boolean(children)
   return (
@@ -33,7 +31,7 @@ export default function Input({
         autoComplete={autoComplete}
         className='w-full rounded-sm  border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
         placeholder={placeholder}
-        {...register(name, rules)}
+        {...register(name)}
       />
       {isChildren ? (
         <>

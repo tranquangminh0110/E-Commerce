@@ -1,26 +1,24 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import QRLogin from 'src/components/Icons/QRLogin'
 import Input from 'src/components/Input'
-import { ruleFunction } from 'src/utils/rules'
+import { SignUpSchema, signUpSchema } from 'src/utils/ZodSchema'
 
-interface FormData {
-  email: string
-  password: string
-  confirm_password: string
-}
+type FormData = SignUpSchema
 
 export default function Register() {
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false)
   const {
     register,
     handleSubmit,
-    getValues,
-    formState: { errors }
-  } = useForm<FormData>()
+    formState: { errors, isValid }
+  } = useForm<FormData>({
+    resolver: zodResolver(signUpSchema),
+    mode: 'onChange'
+  })
 
-  const rules = ruleFunction(getValues)
   const onSubmit: SubmitHandler<FormData> = (data) => {
     console.log(data)
   }
@@ -28,7 +26,6 @@ export default function Register() {
   const handleVisiblePassword = () => {
     setVisiblePassword((prevState) => !prevState)
   }
-  // console.log('Errors', errors)
 
   return (
     <div className='bg-main'>
@@ -56,7 +53,6 @@ export default function Register() {
                 register={register}
                 errorMessage={errors.email?.message}
                 placeholder='Email/Số điện thoại/Tên đăng nhập'
-                rules={rules.email}
               />
               <Input
                 className='relative mt-2'
@@ -66,7 +62,6 @@ export default function Register() {
                 autoComplete='on'
                 errorMessage={errors.password?.message}
                 placeholder='Mật khẩu'
-                rules={rules.password}
               />
               <Input
                 name='confirm_password'
@@ -76,7 +71,6 @@ export default function Register() {
                 autoComplete='on'
                 errorMessage={errors.confirm_password?.message}
                 placeholder='Xác nhận mật khẩu'
-                rules={rules.confirm_password}
               >
                 <div className='flex items-center space-x-3 text-sm'>
                   <label htmlFor='visibleCheckbox'>Hiện mật khẩu</label>
@@ -92,7 +86,8 @@ export default function Register() {
               <div className='mt-4'>
                 <button
                   type='submit'
-                  className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80'
+                  disabled={!isValid}
+                  className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80 disabled:cursor-not-allowed disabled:bg-main/70'
                 >
                   Đăng ký
                 </button>
