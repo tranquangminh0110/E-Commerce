@@ -2,25 +2,50 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { useRegisterAccount } from 'src/services/mutations/User.mutatios'
+import { SignUpSchema, signUpSchema } from 'src/utils/ZodSchema'
+import { omit } from 'lodash'
+import { isUnprocessableEntity } from 'src/utils/Utils'
+import { CommonResponseAPI } from 'src/types/CommonResponse.type'
 import QRLogin from 'src/components/Icons/QRLogin'
 import Input from 'src/components/Input'
-import { SignUpSchema, signUpSchema } from 'src/utils/ZodSchema'
-
-type FormData = SignUpSchema
+export type FormData = SignUpSchema
 
 export default function Register() {
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false)
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isValid }
   } = useForm<FormData>({
     resolver: zodResolver(signUpSchema),
     mode: 'onChange'
   })
 
+  const registerAccountMutation = useRegisterAccount()
+
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log(data)
+    const bodyAccount = omit(data, ['confirm_password'])
+
+    registerAccountMutation.mutate(bodyAccount, {
+      onSuccess: (data) => {
+        console.log(data)
+      },
+      onError: (error) => {
+        if (isUnprocessableEntity<CommonResponseAPI<Omit<FormData, 'confirm_password'>>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof Omit<FormData, 'confirm_password'>, {
+                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
+                type: 'server'
+              })
+            })
+          }
+        }
+      }
+    })
   }
 
   const handleVisiblePassword = () => {
@@ -86,7 +111,7 @@ export default function Register() {
               <div className='mt-4'>
                 <button
                   type='submit'
-                  disabled={!isValid}
+                  disabled={!isValid || registerAccountMutation.isPending}
                   className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80 disabled:cursor-not-allowed disabled:bg-main/70'
                 >
                   Đăng ký

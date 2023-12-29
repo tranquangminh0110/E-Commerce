@@ -155,7 +155,7 @@ export default function Login() {
                 leaveFrom='opacity-100 scale-100'
                 leaveTo='opacity-0 scale-95'
               >
-                <Dialog.Panel className='w-full max-w-[350px] transform flex-col overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all'>
+                <Dialog.Panel className='w-full max-w-[350px] transform flex-col overflow-hidden rounded-xl bg-white p-6 text-center align-middle shadow-xl transition-all'>
                   <div className='flex w-full justify-center'>
                     <img className='h-[100px] w-[100px]' src='/src/assets/Update_Logo.png' alt='' />
                   </div>
