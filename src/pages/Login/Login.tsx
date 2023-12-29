@@ -1,19 +1,60 @@
 import { Dialog, Transition } from '@headlessui/react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState, Fragment } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import HiddenEye from 'src/components/Icons/HiddenEye'
 import QRLogin from 'src/components/Icons/QRLogin'
 import VisibleEye from 'src/components/Icons/VisibleEye'
+import Input from 'src/components/Input'
+import { useLoginAccount } from 'src/services/mutations/User.mutatios'
+import { CommonResponseAPI } from 'src/types/CommonResponse.type'
+import { isUnprocessableEntity } from 'src/utils/Utils'
+import { LoginSchema, loginSchema } from 'src/utils/ZodSchema'
+
+type FormData = LoginSchema
 
 export default function Login() {
   const [isVisiblePassword, setIsVisiblePassword] = useState<boolean>(false)
   const [isVisibleQRLogin, setIsVisibleQRLogin] = useState<boolean>(false)
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isValid }
+  } = useForm<FormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange'
+  })
+
+  const loginAccountMutation = useLoginAccount()
   const handleVisiblePassword = () => {
     setIsVisiblePassword((prevState) => !prevState)
   }
 
   const handleVisibleQRLogin = () => {
     setIsVisibleQRLogin((prevState) => !prevState)
+  }
+
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    loginAccountMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log(data)
+      },
+      onError: (error) => {
+        if (isUnprocessableEntity<CommonResponseAPI<FormData>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof FormData, {
+                message: formError[key as keyof FormData],
+                type: 'Server'
+              })
+            })
+          }
+        }
+      }
+    })
   }
 
   return (
@@ -24,7 +65,7 @@ export default function Login() {
             <img className='h-[450px] w-[450px]' src='/src/assets/BackGroundTheme.png' alt='' />
           </div>
           <div className='lg:col-span-2 lg:col-start-4'>
-            <form className='rounded bg-white px-8 py-10 shadow-sm'>
+            <form className='rounded bg-white px-8 py-10 shadow-sm' onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className='flex items-center justify-between'>
                 <div className='text-2xl'>Đăng nhập</div>
                 <div className='flex items-center space-x-3'>
@@ -35,31 +76,34 @@ export default function Login() {
                   <QRLogin handleVisibleQRLogin={handleVisibleQRLogin} />
                 </div>
               </div>
-              <div className='mt-8'>
-                <input
-                  type='email'
-                  name='email'
-                  className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
-                  placeholder='Email/Số điện thoại/Tên đăng nhập'
-                />
-                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'></div>
-              </div>
-              <div className='relative mt-2'>
-                <input
-                  type={!isVisiblePassword ? 'password' : 'text'}
-                  name='password'
-                  className='w-full rounded-sm border border-gray-300 p-3 text-base outline-none placeholder:font-extralight focus:border-gray-500 focus:shadow-sm'
-                  placeholder='Mật khẩu'
-                />
+              <Input
+                name='email'
+                register={register}
+                type='email'
+                autoComplete='on'
+                className='mt-8'
+                errorMessage={errors.email?.message}
+                placeholder='Email/Số điện thoại/Tên đăng nhập'
+              />
+              <Input
+                name='password'
+                register={register}
+                type={!isVisiblePassword ? 'password' : 'text'}
+                autoComplete='on'
+                className='relative mt-2'
+                placeholder='Mật khẩu'
+                errorMessage={errors.password?.message}
+              >
                 <button type='button' className='absolute right-2 top-3.5' onClick={handleVisiblePassword}>
                   {isVisiblePassword ? <VisibleEye /> : <HiddenEye />}
                 </button>
-                <div className='mt-1 min-h-[1.5rem] text-sm text-red-600'></div>
-              </div>
+              </Input>
+
               <div className='mt-4'>
                 <button
                   type='submit'
-                  className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80'
+                  disabled={!isValid}
+                  className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80 disabled:cursor-not-allowed disabled:bg-main/70'
                 >
                   Đăng nhập
                 </button>

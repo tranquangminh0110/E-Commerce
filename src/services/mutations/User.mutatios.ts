@@ -6,3 +6,9 @@ export const useRegisterAccount = () => {
     mutationFn: (body: { email: string; password: string }) => authUserApi.registerAccount(body)
   })
 }
+
+export const useLoginAccount = () => {
+  return useMutation({
+    mutationFn: (body: { email: string; password: string }) => authUserApi.loginAccount(body)
+  })
+}

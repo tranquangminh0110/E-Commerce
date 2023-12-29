@@ -9,7 +9,7 @@ export const signUpSchema = z
       .min(5, 'Độ dài email từ 5 - 160 kí tự ')
       .max(160, 'Độ dài email từ 5 - 160 kí tự'),
     password: z.string().min(6, 'Độ dài mật khẩu từ 6 - 160 kí tự ').max(160, 'Độ dài mật khẩu từ 6 - 160 kí tự'),
-    confirm_password: z.string()
+    confirm_password: z.string().min(1)
   })
   .superRefine(({ confirm_password, password }, ctx) => {
     if (confirm_password !== password) {
@@ -22,8 +22,9 @@ export const signUpSchema = z
   })
 
 export const loginSchema = z.object({
-  email: z.string().email('Vui lòng nhập email hợp lệ'),
-  password: z.string()
+  email: z.string().email('Vui lòng nhập email hợp lệ').min(1),
+  password: z.string().min(1)
 })
 
 export type SignUpSchema = z.infer<typeof signUpSchema>
+export type LoginSchema = z.infer<typeof loginSchema>
