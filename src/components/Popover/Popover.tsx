@@ -1,5 +1,6 @@
 import {
   FloatingPortal,
+  Placement,
   arrow,
   offset,
   safePolygon,
@@ -18,6 +19,7 @@ interface Props {
   offSet?: number
   as?: ElementType
   initialOpen?: boolean
+  placement?: Placement
 }
 
 export default function Popover({
@@ -25,8 +27,9 @@ export default function Popover({
   renderPopover,
   className,
   offSet = 7,
-  as: Element = 'div',
-  initialOpen
+  as: ElementType = 'div',
+  initialOpen,
+  placement
 }: Props) {
   const [isOpen, setIsOpen] = useState(initialOpen || false)
 
@@ -34,12 +37,13 @@ export default function Popover({
   const { refs, floatingStyles, context, middlewareData } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
-    middleware: [shift(), arrow({ element: arrowRef }), offset(offSet)]
+    middleware: [shift(), arrow({ element: arrowRef }), offset(offSet)],
+    placement
   })
   const hover = useHover(context, { handleClose: safePolygon() })
   const { getReferenceProps, getFloatingProps } = useInteractions([hover])
   return (
-    <Element className={className} ref={refs.setReference} {...getReferenceProps()}>
+    <ElementType className={className} ref={refs.setReference} {...getReferenceProps()}>
       {children}
       {isOpen && (
         <FloatingPortal>
@@ -70,6 +74,6 @@ export default function Popover({
           </AnimatePresence>
         </FloatingPortal>
       )}
-    </Element>
+    </ElementType>
   )
 }

@@ -14,7 +14,9 @@ module.exports = {
         footerTheme: '#fbfbfb',
         footerText: '#0000008a',
         footerInfoText: '#000000A6',
-        hoverText: '#d1d5db'
+        cartText: '#00000042',
+        hoverText: '#d1d5db',
+        hoverCart: '#d0011b14'
       }
     }
   },

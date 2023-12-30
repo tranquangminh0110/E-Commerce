@@ -32,7 +32,33 @@ export default function Header() {
           </div>
           <div className='flex cursor-pointer space-x-3 text-[13px] text-white'>
             {/* Notificate */}
-            <Popover className='flex items-center space-x-1 hover:text-hoverText' renderPopover={<>updating..</>}>
+            <Popover
+              className='flex items-center space-x-1 hover:text-hoverText'
+              placement='bottom-end'
+              renderPopover={
+                <div className='max-w-[350px] rounded-sm border border-gray-200 bg-white shadow-md'>
+                  <div className='p-2 text-sm capitalize text-cartText'>Thông báo mới nhận</div>
+                  {Array(5)
+                    .fill(0)
+                    .map((_, index) => (
+                      <div className='flex gap-2 bg-[#fff2ee80] p-2 hover:bg-white' key={index}>
+                        <img
+                          src='https://down-vn.img.susercontent.com/file/sg-11134004-7rbn2-lprobo8tznty78_tn'
+                          className='h-10 w-10 object-cover'
+                          alt=''
+                        />
+                        <div className='flex flex-col text-xs'>
+                          <div className='uppercase'>TẾT SALE THẢ GA TUNG DEAL ĐẠI PHÁT</div>
+                          <div>
+                            🧧Lì xì mã giảm chấn động đến 1.1 Triệu ✨Loạt deal sốc chỉ từ 8.000đ, 88.000đ 🌸Ngành hàng
+                            nào cũng giảm còn Freeship 🔥Đếm ngược 2 ngày - Đặt lịch chốt hết
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              }
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -50,7 +76,7 @@ export default function Header() {
               <span>Thông báo</span>
             </Popover>
             {/* Support */}
-            <Popover className='flex items-center space-x-1 hover:text-hoverText' renderPopover={<>update</>}>
+            <div className='flex items-center space-x-1 hover:text-hoverText'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -66,14 +92,16 @@ export default function Header() {
                 />
               </svg>
               <span>Hỗ trợ</span>
-            </Popover>
+            </div>
+
             {/* Language */}
             <Popover
+              placement='bottom-end'
               className='flex items-center space-x-1 hover:text-hoverText'
               renderPopover={
-                <div className='rounded-sm border border-gray-200 bg-white shadow-md'>
-                  <div className='flex flex-col px-3 py-2'>
-                    <button className='px-3 py-1 hover:text-main'>Tiếng Việt</button>
+                <div className='rounded-sm border border-gray-200 bg-white text-sm shadow-md'>
+                  <div className='mr-16 flex flex-col items-start px-1 py-2'>
+                    <button className='px-3 py-1 hover:text-main '>Tiếng Việt</button>
                     <button className='px-3 py-1 hover:text-main'>English</button>
                   </div>
                 </div>
@@ -108,17 +136,18 @@ export default function Header() {
 
             {/* Profile */}
             <Popover
+              placement='bottom-end'
               className='flex items-center hover:text-hoverText'
               renderPopover={
-                <div className='rounded-sm border border-gray-200 bg-white shadow-md'>
+                <div className='rounded-sm border border-gray-200 bg-white text-sm shadow-md'>
                   <div className='flex flex-col items-stretch'>
-                    <Link to='/' className='px-5 py-3 hover:bg-gray-50 hover:text-[#10b981]'>
+                    <Link to='/' className='px-4 py-2 hover:bg-gray-50 hover:text-[#10b981]'>
                       Tài khoản của tôi
                     </Link>
-                    <Link to='/' className='px-5 py-3 hover:bg-gray-50 hover:text-[#10b981]'>
+                    <Link to='/' className='px-4 py-2 hover:bg-gray-50 hover:text-[#10b981]'>
                       Đơn mua
                     </Link>
-                    <button className='px-5 py-3 text-left hover:bg-gray-50 hover:text-[#10b981]'>Đăng xuất</button>
+                    <button className='px-4 py-2 text-left hover:bg-gray-50 hover:text-[#10b981]'>Đăng xuất</button>
                   </div>
                 </div>
               }
@@ -182,7 +211,60 @@ export default function Header() {
               </button>
             </form>
           </div>
-          <div className='col-span-1 flex items-center justify-center'>
+          <Popover
+            className='col-span-1 flex items-center justify-center'
+            placement='bottom-end'
+            offSet={12}
+            renderPopover={
+              <div className='max-w-[380px] rounded-sm border border-gray-200 bg-white shadow-md'>
+                <div className=''>
+                  <div className='p-3 text-sm capitalize text-cartText'>Sản phẩm mới thêm</div>
+                  <div className='mt-1'>
+                    <div className='flex p-2 text-sm hover:bg-hoverCart'>
+                      <div className='flex-shrink-0'>
+                        <img
+                          className='h-12 w-12 border object-cover'
+                          src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk24sj5gyhoic9_tn'
+                          alt=''
+                        />
+                      </div>
+                      <div className=' ml-2 flex-grow overflow-hidden text-sm'>
+                        <div className='truncate'>
+                          Bàn Phím Cơ Lofree Flow Không Dây Kaih Full POM Switch/ Đèn LED RGB/ Sử Dụng 40 Giờ Liên Tục
+                        </div>
+                      </div>
+                      <div className='ml-2 flex-shrink-0'>
+                        <div className='text-main'>₫2.899.000</div>
+                      </div>
+                    </div>
+                    <div className='flex p-2 text-sm hover:bg-hoverCart'>
+                      <div className='flex-shrink-0'>
+                        <img
+                          className='h-12 w-12 border object-cover'
+                          src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk24sj5gyhoic9_tn'
+                          alt=''
+                        />
+                      </div>
+                      <div className=' ml-2 flex-grow overflow-hidden '>
+                        <div className='truncate'>
+                          Bàn Phím Cơ Lofree Flow Không Dây Kaih Full POM Switch/ Đèn LED RGB/ Sử Dụng 40 Giờ Liên Tục
+                        </div>
+                      </div>
+                      <div className='ml-2 flex-shrink-0'>
+                        <div className='text-main'>₫2.899.000</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-between bg-[#00000002] px-3 py-5'>
+                    <div className='text-xs capitalize'>1 Thêm hàng vào giỏ</div>
+                    <button className='rounded-sm border bg-main px-3 py-2 text-sm text-white hover:bg-main/80'>
+                      Xem Giỏ Hàng
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          >
             <Link to='/'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -199,7 +281,7 @@ export default function Header() {
                 />
               </svg>
             </Link>
-          </div>
+          </Popover>
         </div>
       </div>
     </header>
