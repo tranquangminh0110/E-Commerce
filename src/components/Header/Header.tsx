@@ -1,6 +1,16 @@
 import { Link } from 'react-router-dom'
 import Popover from '../Popover'
+import { useLogoutAccount } from 'src/services/mutations/User.mutatios'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/App.context'
+import Path from 'src/constants/Path'
 export default function Header() {
+  const { isAuthenticated, userProfile } = useContext(AppContext)
+  const logoutAccountMutation = useLogoutAccount()
+
+  const handleLogout = () => {
+    logoutAccountMutation.mutate()
+  }
   return (
     <header className='bg-2 bg-main pb-5'>
       <div className='container'>
@@ -135,32 +145,49 @@ export default function Header() {
             </Popover>
 
             {/* Profile */}
-            <Popover
-              placement='bottom-end'
-              className='flex items-center hover:text-hoverText'
-              renderPopover={
-                <div className='rounded-sm border border-gray-200 bg-white text-sm shadow-md'>
-                  <div className='flex flex-col items-stretch'>
-                    <Link to='/' className='px-4 py-2 hover:bg-gray-50 hover:text-[#10b981]'>
-                      Tài khoản của tôi
-                    </Link>
-                    <Link to='/' className='px-4 py-2 hover:bg-gray-50 hover:text-[#10b981]'>
-                      Đơn mua
-                    </Link>
-                    <button className='px-4 py-2 text-left hover:bg-gray-50 hover:text-[#10b981]'>Đăng xuất</button>
+            {isAuthenticated ? (
+              <Popover
+                placement='bottom-end'
+                className='flex items-center hover:text-hoverText'
+                renderPopover={
+                  <div className='rounded-sm border border-gray-200 bg-white text-sm shadow-md'>
+                    <div className='flex flex-col items-stretch capitalize'>
+                      <Link to='/profile' className='px-4 py-2 hover:bg-gray-50 hover:text-[#10b981]'>
+                        Tài khoản của tôi
+                      </Link>
+                      <Link to='/' className='px-4 py-2 hover:bg-gray-50 hover:text-[#10b981]'>
+                        Đơn mua
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className='px-4 py-2 text-left hover:bg-gray-50 hover:text-[#10b981]'
+                      >
+                        Đăng xuất
+                      </button>
+                    </div>
                   </div>
+                }
+              >
+                <div className='mr-2 h-6 w-6 flex-shrink-0 '>
+                  <img
+                    className='h-full w-full rounded-full object-cover'
+                    src='https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg'
+                    alt=''
+                  />
                 </div>
-              }
-            >
-              <div className='mr-2 h-6 w-6 flex-shrink-0 '>
-                <img
-                  className='h-full w-full rounded-full object-cover'
-                  src='https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg'
-                  alt=''
-                />
+                <span>{userProfile?.email}</span>
+              </Popover>
+            ) : (
+              <div className='flex h-full items-center space-x-2'>
+                <Link className='capitalize text-white hover:text-hoverText' to={Path.register}>
+                  Đăng ký
+                </Link>
+                <div className='h-3/5 border-r-[1px] border-gray-300/80'></div>
+                <Link className='capitalize text-white hover:text-hoverText' to={Path.login}>
+                  Đăng nhập
+                </Link>
               </div>
-              <span>bibabibum0110</span>
-            </Popover>
+            )}
           </div>
         </div>
         <div className='mt-4 grid grid-cols-12 items-center gap-3'>
@@ -265,7 +292,7 @@ export default function Header() {
               </div>
             }
           >
-            <Link to='/'>
+            <Link to={Path.home}>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'

@@ -1,4 +1,9 @@
-export interface CommonResponseAPI<TData> {
+export interface ErrorResponseAPI<Data> {
   message: string
-  data?: TData
+  data?: Data
+}
+
+export interface SuccessResponseAPI<Data> {
+  message: string
+  data: Data
 }

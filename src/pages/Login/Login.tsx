@@ -1,20 +1,24 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useContext } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import Button from 'src/components/Button'
 import HiddenEye from 'src/components/Icons/HiddenEye'
 import QRLogin from 'src/components/Icons/QRLogin'
 import VisibleEye from 'src/components/Icons/VisibleEye'
 import Input from 'src/components/Input'
+import Path from 'src/constants/Path'
+import { AppContext } from 'src/contexts/App.context'
 import { useLoginAccount } from 'src/services/mutations/User.mutatios'
-import { CommonResponseAPI } from 'src/types/CommonResponse.type'
+import { ErrorResponseAPI } from 'src/types/CommonResponse.type'
 import { isUnprocessableEntity } from 'src/utils/Utils'
 import { LoginSchema, loginSchema } from 'src/utils/ZodSchema'
 
 type FormData = LoginSchema
 
 export default function Login() {
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const [isVisiblePassword, setIsVisiblePassword] = useState<boolean>(false)
   const [isVisibleQRLogin, setIsVisibleQRLogin] = useState<boolean>(false)
   const {
@@ -39,10 +43,11 @@ export default function Login() {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     loginAccountMutation.mutate(data, {
       onSuccess: (data) => {
-        console.log(data)
+        setIsAuthenticated(true)
+        setProfile(data.data.data.user)
       },
       onError: (error) => {
-        if (isUnprocessableEntity<CommonResponseAPI<FormData>>(error)) {
+        if (isUnprocessableEntity<ErrorResponseAPI<FormData>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
@@ -100,14 +105,16 @@ export default function Login() {
               </Input>
 
               <div className='mt-4'>
-                <button
+                <Button
                   type='submit'
-                  disabled={!isValid}
-                  className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80 disabled:cursor-not-allowed disabled:bg-main/70'
+                  disabled={!isValid || loginAccountMutation.isPending}
+                  isLoading={loginAccountMutation.isPending}
+                  className='flex w-full items-center justify-center space-x-2 rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80 disabled:cursor-not-allowed disabled:bg-main/70'
                 >
                   Đăng nhập
-                </button>
+                </Button>
               </div>
+
               <div className='mt-2 flex items-center justify-between text-xs font-medium text-[#0055AA]'>
                 <Link to='#'>Quên mật khẩu</Link>
                 <Link to='#'>Đăng nhập với SMS</Link>
@@ -166,7 +173,7 @@ export default function Login() {
               </div>
               <div className='mt-3 text-center text-sm'>
                 <span className='text-[#00000042]'>Bạn mới biết đến Shopee? </span>
-                <Link className='text-main' to='/register'>
+                <Link className='text-main' to={Path.register}>
                   Đăng ký
                 </Link>
               </div>

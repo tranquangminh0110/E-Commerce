@@ -1,17 +1,21 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { useRegisterAccount } from 'src/services/mutations/User.mutatios'
 import { SignUpSchema, signUpSchema } from 'src/utils/ZodSchema'
 import { omit } from 'lodash'
 import { isUnprocessableEntity } from 'src/utils/Utils'
-import { CommonResponseAPI } from 'src/types/CommonResponse.type'
+import { ErrorResponseAPI } from 'src/types/CommonResponse.type'
 import QRLogin from 'src/components/Icons/QRLogin'
 import Input from 'src/components/Input'
+import { AppContext } from 'src/contexts/App.context'
+import Button from 'src/components/Button'
+import Path from 'src/constants/Path'
 export type FormData = SignUpSchema
 
 export default function Register() {
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false)
   const {
     register,
@@ -30,10 +34,11 @@ export default function Register() {
 
     registerAccountMutation.mutate(bodyAccount, {
       onSuccess: (data) => {
-        console.log(data)
+        setIsAuthenticated(true)
+        setProfile(data.data.data.user)
       },
       onError: (error) => {
-        if (isUnprocessableEntity<CommonResponseAPI<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isUnprocessableEntity<ErrorResponseAPI<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
@@ -109,13 +114,14 @@ export default function Register() {
                 </div>
               </Input>
               <div className='mt-4'>
-                <button
+                <Button
                   type='submit'
                   disabled={!isValid || registerAccountMutation.isPending}
-                  className='w-full rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80 disabled:cursor-not-allowed disabled:bg-main/70'
+                  isLoading={registerAccountMutation.isPending}
+                  className='flex w-full items-center justify-center space-x-2 rounded-sm bg-main px-2 py-4 text-center text-sm uppercase text-white hover:bg-main/80 disabled:cursor-not-allowed disabled:bg-main/70'
                 >
                   Đăng ký
-                </button>
+                </Button>
               </div>
               <div className='mt-2 flex items-center justify-between text-xs font-medium text-[#0055AA]'>
                 <Link to='#'>Quên mật khẩu</Link>
@@ -187,7 +193,7 @@ export default function Register() {
               </div>
               <div className='mt-3 text-center text-sm'>
                 <span className='text-[#00000042]'>Bạn đã có tài khoản? </span>
-                <Link className='text-main' to='/login'>
+                <Link className='text-main' to={Path.login}>
                   Đăng nhập
                 </Link>
               </div>

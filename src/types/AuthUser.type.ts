@@ -1,7 +1,7 @@
-import { CommonResponseAPI } from './CommonResponse.type'
+import { SuccessResponseAPI } from './CommonResponse.type'
 import { User } from './User.type'
 
-export type AuthUserResponse = CommonResponseAPI<{
+export type AuthUserResponse = SuccessResponseAPI<{
   access_token: string
   expires: number
   refresh_token: string

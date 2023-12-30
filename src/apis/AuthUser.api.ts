@@ -8,6 +8,9 @@ const authUserApi = {
   },
   loginAccount: (body: { email: string; password: string }) => {
     return http.post<AuthUserResponse>(Endpoints.login, body)
+  },
+  logoutAccount: () => {
+    return http.post(Endpoints.logout)
   }
 }
 

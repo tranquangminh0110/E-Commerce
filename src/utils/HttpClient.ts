@@ -1,9 +1,14 @@
 import axios, { AxiosError, HttpStatusCode, type AxiosInstance } from 'axios'
 import { toast } from 'react-toastify'
+import { Endpoints } from 'src/constants/Endpoints'
+import { AuthUserResponse } from 'src/types/AuthUser.type'
+import interactLocalStorage from './LocalStorageInteract'
 
-class Http {
+export class Http {
   instance: AxiosInstance
+  access_token: string
   constructor() {
+    this.access_token = interactLocalStorage.getAccessToken()
     this.instance = axios.create({
       baseURL: 'https://api-ecom.duthanhduoc.com/',
       timeout: 10000,
@@ -11,10 +16,30 @@ class Http {
         'Content-Type': 'application/json'
       }
     })
+    this.instance.interceptors.request.use(
+      (config) => {
+        if (this.access_token) {
+          config.headers.Authorization = this.access_token
+          return config
+        }
+        return config
+      },
+      (error) => {
+        return Promise.reject(error)
+      }
+    )
     this.instance.interceptors.response.use(
-      function (response) {
-        // Any status code that lie within the range of 2xx cause this function to trigger
-        // Do something with response data
+      (response) => {
+        const { url } = response.config
+        if ([Endpoints.login, Endpoints.register].includes(url as 'login' | 'register')) {
+          const data = response.data as AuthUserResponse
+          this.access_token = data.data.access_token
+          interactLocalStorage.setAccessToken(this.access_token)
+          interactLocalStorage.setProfileUser(data.data.user)
+        } else if (Endpoints.logout === url) {
+          this.access_token = ''
+          interactLocalStorage.removeAllData()
+        }
         return response
       },
       function (error: AxiosError) {
@@ -31,4 +56,5 @@ class Http {
 }
 
 const http = new Http().instance
+
 export default http

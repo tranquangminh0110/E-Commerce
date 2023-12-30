@@ -23,7 +23,7 @@ export const signUpSchema = z
 
 export const loginSchema = z.object({
   email: z.string().email('Vui lòng nhập email hợp lệ').min(1),
-  password: z.string().min(1)
+  password: z.string().min(1, ' ')
 })
 
 export type SignUpSchema = z.infer<typeof signUpSchema>

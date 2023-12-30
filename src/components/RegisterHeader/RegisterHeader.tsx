@@ -11,7 +11,7 @@ export default function RegisterHeader() {
             <Link to='/'>
               <img className='h-12 lg:h-14' src='/src/assets/Official_Logo.png' alt='' />
             </Link>
-            <div className='ml-2 mt-1 text-xl lg:text-2xl'>{isRegister ? 'Đăng ký' : 'Đăng nhập'}</div>
+            <div className='ml-2 mt-1 text-xl capitalize lg:text-2xl'>{isRegister ? 'Đăng ký' : 'Đăng nhập'}</div>
           </div>
           <Link to='https://help.shopee.vn/portal' target='_blank'>
             <div className='text-sm text-main'>Bạn cần giúp đỡ?</div>
