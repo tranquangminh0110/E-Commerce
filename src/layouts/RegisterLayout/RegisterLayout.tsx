@@ -1,3 +1,4 @@
+import React from 'react'
 import Footer from 'src/components/Footer'
 import RegisterHeader from 'src/components/RegisterHeader'
 
@@ -7,10 +8,10 @@ interface IProps {
 
 export default function RegisterLayout({ children }: IProps) {
   return (
-    <div>
+    <React.Fragment>
       <RegisterHeader />
       {children}
       <Footer />
-    </div>
+    </React.Fragment>
   )
 }

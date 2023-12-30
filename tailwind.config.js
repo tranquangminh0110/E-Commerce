@@ -13,7 +13,8 @@ module.exports = {
         main: '#D0011B',
         footerTheme: '#fbfbfb',
         footerText: '#0000008a',
-        footerInfoText: '#000000A6'
+        footerInfoText: '#000000A6',
+        hoverText: '#d1d5db'
       }
     }
   },
