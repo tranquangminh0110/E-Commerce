@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import Popover from '../Popover'
-import { useLogoutAccount } from 'src/services/mutations/User.mutatios'
+import { useLogoutAccount } from 'src/services/mutations/User.mutations'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/App.context'
 import Path from 'src/constants/Path'

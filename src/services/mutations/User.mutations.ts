@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useContext } from 'react'
-import authUserApi from 'src/apis/AuthUser.api'
+import authUserApi from 'src/apis/User.api'
 import { AppContext } from 'src/contexts/App.context'
 
 export const useRegisterAccount = () => {

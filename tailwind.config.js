@@ -16,7 +16,10 @@ module.exports = {
         footerInfoText: '#000000A6',
         cartText: '#00000042',
         hoverText: '#d1d5db',
-        hoverCart: '#d0011b14'
+        hoverCart: '#d0011b14',
+        mall: '#f5f5f5',
+        textMall: '#000000CC',
+        textInSort: '#555555'
       }
     }
   },

@@ -5,9 +5,8 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export default function Button(props: Props) {
   const { className, isLoading, disabled, children, ...rest } = props
-  const newClassName = className + ''
   return (
-    <button className={newClassName} disabled={disabled} {...rest}>
+    <button className={className} disabled={disabled} {...rest}>
       {isLoading && (
         <svg
           aria-hidden='true'

@@ -1,8 +1,9 @@
 import axios, { AxiosError, HttpStatusCode, type AxiosInstance } from 'axios'
 import { toast } from 'react-toastify'
-import { Endpoints } from 'src/constants/Endpoints'
-import { AuthUserResponse } from 'src/types/AuthUser.type'
+import { ResourcePath } from 'src/constants/ResourcePath'
 import interactLocalStorage from './LocalStorageInteract'
+import { SuccessResponseAPI } from 'src/types/CommonResponse.type'
+import { AuthenticatedUser } from 'src/types/User.type'
 
 export class Http {
   instance: AxiosInstance
@@ -31,12 +32,12 @@ export class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        if ([Endpoints.login, Endpoints.register].includes(url as 'login' | 'register')) {
-          const data = response.data as AuthUserResponse
+        if ([ResourcePath.login, ResourcePath.register].includes(url as 'login' | 'register')) {
+          const data = response.data as SuccessResponseAPI<AuthenticatedUser>
           this.access_token = data.data.access_token
           interactLocalStorage.setAccessToken(this.access_token)
           interactLocalStorage.setProfileUser(data.data.user)
-        } else if (Endpoints.logout === url) {
+        } else if (ResourcePath.logout === url) {
           this.access_token = ''
           interactLocalStorage.removeAllData()
         }

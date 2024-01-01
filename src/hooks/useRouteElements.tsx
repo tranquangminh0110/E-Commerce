@@ -23,6 +23,15 @@ export default function useRouteElements() {
   const routeElements = useRoutes([
     {
       path: '',
+      index: true,
+      element: (
+        <MainLayout>
+          <ProductList />
+        </MainLayout>
+      )
+    },
+    {
+      path: '',
       element: <ProtectedRoute />,
       children: [
         {
@@ -56,15 +65,6 @@ export default function useRouteElements() {
           )
         }
       ]
-    },
-    {
-      path: '',
-      index: true,
-      element: (
-        <MainLayout>
-          <ProductList />
-        </MainLayout>
-      )
     }
   ])
   return routeElements

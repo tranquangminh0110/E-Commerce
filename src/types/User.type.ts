@@ -12,3 +12,11 @@ export interface User {
   updatedAt: string
   __v: number
 }
+
+export interface AuthenticatedUser {
+  access_token: string
+  expires: number
+  refresh_token: string
+  expires_refresh_token: number
+  user: User
+}
