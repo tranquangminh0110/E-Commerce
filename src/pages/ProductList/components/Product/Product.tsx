@@ -11,7 +11,7 @@ export default function Product({ product }: Props) {
   return (
     <Link to='#'>
       <div className='relative overflow-hidden rounded-sm bg-white shadow-sm transition-transform duration-100 hover:translate-y-[-0.1rem] hover:shadow'>
-        <img className='absolute left-0 top-[-2px] z-50 h-8 w-8' src='/src/assets/tag-mall-final.png' alt='' />
+        <img className='absolute left-0 top-[-2px] z-10 h-8 w-8' src='/src/assets/tag-mall-final.png' alt='' />
         <div className='relative w-full pt-[100%]'>
           <img
             className='absolute left-0 top-0 h-full w-full bg-white object-cover'

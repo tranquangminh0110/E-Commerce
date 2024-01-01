@@ -27,15 +27,15 @@ export interface ProductList {
   }
 }
 
-export interface ProductListQueryConfig {
-  page?: number //số trang, default: 1
-  limit?: number // số lượng product trên 1 trang, default: 30
+export interface ProductListQueryParamsConfig {
+  page?: number | string //số trang, default: 1
+  limit?: number | string // số lượng product trên 1 trang, default: 30
   order?: 'desc' | 'asc' //sắp xếp theo thứ tự, default: 'desc'
   sort_by?: 'createdAt' | 'view' | 'sold' | 'price' //sắp xếp theo trường, default: 'createdAt'
   category?: string //lọc theo category
   exclude?: string //loại trừ sản phẩm nào đó
-  rating_filter?: number //lọc sản phẩm có số sao lớn hơn hoặc bằng rating_filter
-  price_max?: number //lọc sản phẩm với giá cao nhất
-  price_min?: number // lọc sản phẩm với giá thấp nhất
+  rating_filter?: number | string //lọc sản phẩm có số sao lớn hơn hoặc bằng rating_filter
+  price_max?: number | string //lọc sản phẩm với giá cao nhất
+  price_min?: number | string // lọc sản phẩm với giá thấp nhất
   name?: string //lọc theo tên sản phẩm (tiếng Việt có dấu)
 }

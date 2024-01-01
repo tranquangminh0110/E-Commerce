@@ -3,5 +3,6 @@ export const ResourcePath = {
   login: 'login',
   logout: 'logout',
   detailProfile: 'me',
-  products: 'products'
+  products: 'products',
+  categories: 'categories'
 } as const

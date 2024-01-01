@@ -48,7 +48,7 @@ export default function Popover({
       {isOpen && (
         <FloatingPortal>
           <AnimatePresence>
-            <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+            <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()} className='z-20'>
               <motion.div
                 style={{
                   width: 'max-content',
