@@ -1,12 +1,27 @@
-import { Link } from 'react-router-dom'
+import { Link, createSearchParams } from 'react-router-dom'
 import Button from 'src/components/Button'
-import Input from 'src/components/Input'
 import Path from 'src/constants/Path'
+import { Category } from 'src/types/Category.type'
+import { QueryParamsConfig } from '../../ProductList'
+import classNames from 'classnames'
+import Input from 'src/components/Input'
 
-export default function AsideFilter() {
+interface Props {
+  categories: Category[]
+  queryParamsConfig: QueryParamsConfig
+}
+
+export default function AsideFilter({ categories, queryParamsConfig }: Props) {
+  const { category: currentCategory } = queryParamsConfig
+
   return (
     <div className='py-4'>
-      <Link to={Path.home} className='flex items-center font-bold uppercase text-textMall'>
+      <Link
+        to={Path.home}
+        className={classNames('flex items-center uppercase text-main', {
+          'font-bold': !currentCategory
+        })}
+      >
         <svg viewBox='0 0 12 10' className='mr-3 h-4 w-3 fill-current'>
           <g fillRule='evenodd' stroke='none' strokeWidth={1}>
             <g transform='translate(-373 -208)'>
@@ -20,44 +35,41 @@ export default function AsideFilter() {
             </g>
           </g>
         </svg>
-        <span>Tất cả danh mục</span>
+        <div>Tất cả danh mục</div>
       </Link>
       <div className='my-4 h-[1px] border-b'></div>
-      <ul className='ml-3 flex flex-col space-y-3 text-sm'>
-        <li>
-          <Link to={Path.home} className='relative flex items-center font-semibold text-main'>
-            <svg viewBox='0 0 4 7' className='absolute left-[-6px] h-2 w-2 fill-main '>
-              <polygon points='4 3.5 0 0 0 7' />
-            </svg>
-            <div className='ml-1'>Thời trang nam</div>
-          </Link>
-        </li>
-        <li>
-          <Link to={Path.home} className='flex items-center '>
-            <div className='ml-1'>Đồng hồ</div>
-          </Link>
-        </li>
-        <li>
-          <Link to={Path.home} className='flex items-center '>
-            <div className='ml-1'>Điện thoại</div>
-          </Link>
-        </li>
-        <li>
-          <Link to={Path.home} className='flex items-center '>
-            <div className='ml-1'>Máy tính & Laptop</div>
-          </Link>
-        </li>
-        <li>
-          <Link to={Path.home} className='flex items-center '>
-            <div className='ml-1'>Nón</div>
-          </Link>
-        </li>
-        <li>
-          <Link to={Path.home} className='flex items-center '>
-            <div className='ml-1'>Áo khoác</div>
-          </Link>
-        </li>
-      </ul>
+      {categories && (
+        <ul className='ml-3 flex flex-col space-y-3 text-sm'>
+          {categories.map((categoryItem) => {
+            const isActiveCategory = categoryItem._id === currentCategory
+            return (
+              <li key={categoryItem._id}>
+                <Link
+                  to={{
+                    pathname: Path.home,
+                    search: createSearchParams({
+                      ...queryParamsConfig,
+                      category: categoryItem._id
+                    }).toString()
+                  }}
+                  className={classNames('relative flex items-center pl-1 font-semibold text-main', {
+                    'font-semibold text-main': isActiveCategory,
+                    'font-normal text-textMall': !isActiveCategory
+                  })}
+                >
+                  {isActiveCategory && (
+                    <svg viewBox='0 0 4 7' className='absolute left-[-6px] h-2 w-2 fill-main '>
+                      <polygon points='4 3.5 0 0 0 7' />
+                    </svg>
+                  )}
+                  <div className='ml-1'>{categoryItem.name}</div>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+
       <Link to={Path.home} className='mt-10 flex items-center font-bold uppercase text-textMall'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -77,8 +89,8 @@ export default function AsideFilter() {
       </Link>
       <div className='my-4 h-[1px] border-b'></div>
 
-      <div className='my-4 text-sm capitalize'>Theo danh mục</div>
-      <ul className='flex flex-col space-y-3 text-sm'>
+      <div className='my-4 text-sm font-normal capitalize'>Theo danh mục</div>
+      <ul className='flex flex-col space-y-3 text-sm font-normal'>
         <li className='flex items-start justify-start space-x-1'>
           <input id='checkb1' type='checkbox' />
           <label htmlFor='checkb1' className='flex-wrap'>
@@ -114,7 +126,7 @@ export default function AsideFilter() {
             <Input
               placeholder='₫ ĐẾN'
               className='grow'
-              name='from'
+              name='to'
               classNameInput='p-1 text-sm w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
             />
           </div>

@@ -81,7 +81,7 @@ export default function SortProductList({ queryParamsConfig, pageSize }: Props) 
             name=''
             className={classNames('h-9 rounded-sm bg-white px-4 text-left capitalize outline-none', {
               'text-main': Boolean(order),
-              'text-textMall': Boolean(order) === false
+              'selection:text-textMall': Boolean(order) === false
             })}
             value={order || 'defaultTitle'}
             onChange={handleFilterPriceOrder}

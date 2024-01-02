@@ -5,7 +5,7 @@ import http from 'src/utils/HttpClient'
 
 const categoryApi = {
   getCategories: () => {
-    return http.get<SuccessResponseAPI<Category>>(ResourcePath.categories)
+    return http.get<SuccessResponseAPI<Category[]>>(ResourcePath.categories)
   }
 }
 

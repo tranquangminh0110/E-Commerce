@@ -6,18 +6,23 @@ import SortProductList from './components/SortProductList'
 import { useQueryParams } from 'src/hooks/useQueryParams'
 import Pagination from './components/Pagination'
 import { ProductListQueryParamsConfig } from 'src/types/Product.type'
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
+import { useGetCategories } from 'src/services/queries/Category.queries'
+import { createSearchParams, useNavigate } from 'react-router-dom'
+import Path from 'src/constants/Path'
 
 export type QueryParamsConfig = {
   [key in keyof ProductListQueryParamsConfig]: string
 }
 
 export default function ProductList() {
+  const navigate = useNavigate()
   const queryParams: QueryParamsConfig = useQueryParams()
+
   const queryParamsConfig: QueryParamsConfig = omitBy(
     {
       page: queryParams.page || '1',
-      limit: queryParams.limit || '15',
+      limit: queryParams.limit || '10',
       sort_by: queryParams.sort_by,
       name: queryParams.name,
       order: queryParams.order,
@@ -28,15 +33,29 @@ export default function ProductList() {
     },
     isUndefined
   )
-  console.log('rerender')
 
+  const getCategoriesQuery = useGetCategories()
   const getProductListQuery = useGetProductList(queryParamsConfig as ProductListQueryParamsConfig)
+
+  useEffect(() => {
+    if (getProductListQuery.data?.data.data.products.length === 0) {
+      navigate({
+        pathname: Path.home,
+        search: createSearchParams({
+          ...queryParamsConfig,
+          page: '1',
+          limit: '4'
+        }).toString()
+      })
+    }
+  }, [getProductListQuery.data?.data.data.products, navigate, queryParamsConfig])
+
   return (
     <div className='bg-mall py-6'>
       <div className='container'>
         <div className='grid grid-cols-12 gap-6'>
           <div className='col-span-2'>
-            <AsideFilter />
+            <AsideFilter queryParamsConfig={queryParamsConfig} categories={getCategoriesQuery.data?.data.data || []} />
           </div>
           <div className='col-span-10'>
             {getProductListQuery.data && (
