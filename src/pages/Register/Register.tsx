@@ -12,6 +12,7 @@ import Input from 'src/components/Input'
 import { AppContext } from 'src/contexts/App.context'
 import Button from 'src/components/Button'
 import Path from 'src/constants/Path'
+
 export type FormData = SignUpSchema
 
 export default function Register() {
