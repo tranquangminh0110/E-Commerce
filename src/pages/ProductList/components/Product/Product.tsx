@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import ProductRating from 'src/components/RatingStar'
+import Path from 'src/constants/Path'
 import { Product as TProduct } from 'src/types/Product.type'
 import { formatNumberToSocialStyle } from 'src/utils/Utils'
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 const cityArray: string[] = ['TP. Hồ Chí Minh', 'Đà Nẵng', 'Hà Nội', 'Huế', 'Đồng Nai', 'Lạng Sơn', 'Bình Dương']
 export default function Product({ product }: Props) {
   return (
-    <Link to='#'>
+    <Link to={`${Path.home}${product._id}`}>
       <div className='relative overflow-hidden rounded-sm bg-white shadow-sm transition-transform duration-100 hover:translate-y-[-0.1rem] hover:shadow'>
         <img className='absolute left-0 top-[-2px] z-10 h-8 w-8' src='/src/assets/tag-mall-final.png' alt='' />
         <div className='relative w-full pt-[100%]'>

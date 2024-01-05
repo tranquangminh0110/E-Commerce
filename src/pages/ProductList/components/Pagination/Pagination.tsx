@@ -1,14 +1,14 @@
 import { useCallback } from 'react'
 import { Link, createSearchParams } from 'react-router-dom'
 import classNames from 'classnames'
-import { QueryParamsConfig } from '../../ProductList'
 import Path from 'src/constants/Path'
+import useQueryConfig from 'src/hooks/useQueryConfig'
 
 interface Props {
-  queryParamsConfig: QueryParamsConfig
   pageSize: number
 }
-export default function Pagination({ queryParamsConfig, pageSize }: Props) {
+export default function Pagination({ pageSize }: Props) {
+  const queryParamsConfig = useQueryConfig()
   const currentPage = Number(queryParamsConfig.page)
 
   const handlePagination = useCallback((totalPages: number, currentPage: number, range: number) => {

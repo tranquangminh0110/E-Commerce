@@ -10,3 +10,10 @@ export const useGetProductList = (queryParams: ProductListQueryParamsConfig) => 
     placeholderData: keepPreviousData
   })
 }
+
+export const useGetProductDetail = (productId_: string) => {
+  return useQuery({
+    queryKey: ['product', productId_],
+    queryFn: () => productApi.getProduct(productId_)
+  })
+}

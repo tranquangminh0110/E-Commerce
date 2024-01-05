@@ -2,7 +2,6 @@ import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button'
 import Path from 'src/constants/Path'
 import { Category } from 'src/types/Category.type'
-import { QueryParamsConfig } from '../../ProductList'
 import classNames from 'classnames'
 import InputNumber from 'src/components/InputNumber'
 import { useForm, Controller, SubmitHandler, SubmitErrorHandler } from 'react-hook-form'
@@ -11,10 +10,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { NoUndefinedField } from 'src/types/Util.type'
 import ButtonStar from 'src/components/ButtonStar'
 import { omit } from 'lodash'
+import useQueryConfig from 'src/hooks/useQueryConfig'
 
 interface Props {
   categories: Category[]
-  queryParamsConfig: QueryParamsConfig
 }
 
 /**
@@ -23,8 +22,9 @@ interface Props {
  * Else Only Price_min || Only Price _Max
  */
 
-export default function AsideFilter({ categories, queryParamsConfig }: Props) {
+export default function AsideFilter({ categories }: Props) {
   const navigate = useNavigate()
+  const queryParamsConfig = useQueryConfig()
   const { category: currentCategory } = queryParamsConfig
 
   const {
