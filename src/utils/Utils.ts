@@ -14,6 +14,10 @@ export const formatNumberToSocialStyle = (rawNumber: number, socialStyle?: boole
     : new Intl.NumberFormat('de-DE').format(rawNumber).replace('.', ',')
 }
 
+export const countPercentageDiscount = (price_after_discount: number, price_before_discount: number) => {
+  return Math.round(((price_before_discount - price_after_discount) / price_before_discount) * 100)
+}
+
 //Total Page = 10
 export const handlePagination = (totalPage: number, currentPage: number, range: number) => {
   const longListPagination: number[] = Array.from({ length: totalPage }, (_, i) => i + 1)

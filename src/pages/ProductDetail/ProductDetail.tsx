@@ -1,32 +1,45 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Breadcrumb from 'src/components/Breadcrumb'
 import ProductRating from 'src/components/RatingStar'
 import { useGetProductDetail } from 'src/services/queries/Product.queries'
-import { formatNumberToSocialStyle } from 'src/utils/Utils'
+import { countPercentageDiscount, formatNumberToSocialStyle } from 'src/utils/Utils'
 import { Dialog, Transition } from '@headlessui/react'
+import InputNumber from 'src/components/InputNumber'
+import DOMPurify from 'dompurify'
 
 export default function ProductDetail() {
   const { id } = useParams()
-  const [slideCount, setSlideCount] = useState<number[]>([0, 5])
+  const mainImageRef = useRef<HTMLImageElement>(null)
+  const [slideIndex, setSlideIndex] = useState<number[]>([0, 5])
   const [isOpenSlideImageModal, setIsOpenSlideImageModal] = useState(false)
-
   const getProductDetailQuery = useGetProductDetail(id as string)
   const productData = getProductDetailQuery.data?.data
+  const [mainImage, setMainImage] = useState('')
 
-  const mainImage = useMemo(() => {
-    return productData?.data.images[slideCount[0]]
-  }, [slideCount, productData?.data.images])
+  const currentImage = useMemo(() => {
+    return productData ? productData?.data.images.slice(...slideIndex) : []
+  }, [slideIndex, productData])
+
+  useEffect(() => {
+    if (productData && currentImage) {
+      setMainImage(currentImage[0])
+    }
+  }, [productData, currentImage])
 
   const handleNextSlide = () => {
-    if (productData && slideCount[1] <= productData.data.images.length - 1) {
-      setSlideCount((prevState) => [prevState[0] + 1, prevState[1] + 1])
+    if (productData && slideIndex[1] < productData.data.images.length) {
+      setSlideIndex((prevState) => [prevState[0] + 1, prevState[1] + 1])
     }
   }
   const handlePrevSlide = () => {
-    if (productData && slideCount[0] > 0) {
-      setSlideCount((prevState) => [prevState[0] - 1, prevState[1] - 1])
+    if (productData && slideIndex[0] > 0) {
+      setSlideIndex((prevState) => [prevState[0] - 1, prevState[1] - 1])
     }
+  }
+
+  const handleChangeMainImage = (image: string) => {
+    setMainImage(image)
   }
 
   const openSlideImageModal = () => {
@@ -34,6 +47,30 @@ export default function ProductDetail() {
   }
   const closeSlideImageModal = () => {
     setIsOpenSlideImageModal(false)
+  }
+
+  const handleZoomInImage = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    const image = mainImageRef.current as HTMLImageElement
+    const { naturalHeight, naturalWidth } = image
+    // Cách 1: Lấy offsetX, offsetY đơn giản khi chúng ta đã xử lý được bubble event
+    // const { offsetX, offsetY } = event.nativeEvent
+
+    // Cách 2: Lấy offsetX, offsetY khi chúng ta không xử lý được bubble event
+    const offsetX = event.pageX - (rect.x + window.scrollX)
+    const offsetY = event.pageY - (rect.y + window.scrollY)
+
+    const top = offsetY * (1 - naturalHeight / rect.height)
+    const left = offsetX * (1 - naturalWidth / rect.width)
+    image.style.width = naturalWidth + 'px'
+    image.style.height = naturalHeight + 'px'
+    image.style.maxWidth = 'unset'
+    image.style.top = top + 'px'
+    image.style.left = left + 'px'
+  }
+
+  const handleZoomOut = () => {
+    mainImageRef.current?.removeAttribute('style')
   }
 
   return (
@@ -51,13 +88,16 @@ export default function ProductDetail() {
               <div className='grid grid-cols-12 gap-9'>
                 <div className='col-span-5'>
                   <div
-                    className='relative w-full pt-[100%] shadow hover:cursor-zoom-in'
+                    className='relative w-full overflow-hidden pt-[100%] shadow hover:cursor-zoom-in'
                     aria-hidden={true}
                     onClick={openSlideImageModal}
+                    onMouseMove={handleZoomInImage}
+                    onMouseLeave={handleZoomOut}
                   >
                     <img
-                      className='absolute left-0 top-0 h-full w-full bg-white object-cover'
+                      className='pointer-events-none absolute left-0 top-0 h-full w-full bg-white object-cover'
                       src={mainImage}
+                      ref={mainImageRef}
                       alt={productData.data.name}
                     />
                   </div>
@@ -92,14 +132,15 @@ export default function ProductDetail() {
                         <path strokeLinecap='round' strokeLinejoin='round' d='m8.25 4.5 7.5 7.5-7.5 7.5' />
                       </svg>
                     </button>
-                    {productData.data.images.slice(...slideCount).map((item, index) => {
-                      const isActive = index === 0
+                    {currentImage.map((item) => {
+                      const isActive = item === mainImage
                       return (
                         <div className='relative col-span-1 w-full pt-[100%]' key={item}>
                           <img
                             className='absolute left-0 top-0 h-full w-full cursor-pointer bg-white object-cover'
                             src={item}
                             alt=''
+                            onMouseEnter={() => handleChangeMainImage(item)}
                           />
                           {isActive && <div className='absolute inset-0 border-2 border-main'></div>}
                         </div>
@@ -156,9 +197,15 @@ export default function ProductDetail() {
                       <div className='text-[#767676]'>Đã bán</div>
                     </div>
                   </div>
-                  <div className='mt-4 bg-[#FAFAFA] px-5 py-3'>
+                  <div className='mt-4 flex items-center justify-start space-x-4 bg-[#FAFAFA] px-4 py-5'>
+                    <div className='text-xl text-textMall line-through'>
+                      ₫{formatNumberToSocialStyle(productData.data.price_before_discount, false)}
+                    </div>
                     <div className='text-3xl text-main'>
                       ₫{formatNumberToSocialStyle(productData.data.price, false)}
+                    </div>
+                    <div className='rounded-sm bg-main p-1 text-xs font-bold uppercase text-white'>
+                      {countPercentageDiscount(productData.data.price, productData.data.price_before_discount)}% giảm
                     </div>
                   </div>
                   <div className='mt-4 p-3 text-sm'>
@@ -185,12 +232,92 @@ export default function ProductDetail() {
                         <span>Xã quảng tiến, huyện trảng bom</span>
                       </div>
                     </div>
+                    <div className='mt-8 grid grid-cols-12 items-center'>
+                      <div className='col-span-2 text-[#767676]'>Số lượng</div>
+                      <div className='col-span-10 flex items-center'>
+                        <button className='flex h-8 w-8 items-center justify-center rounded-l-sm border border-gray-300'>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            strokeWidth={1.5}
+                            stroke='currentColor'
+                            className='h-4 w-4'
+                          >
+                            <path strokeLinecap='round' strokeLinejoin='round' d='M5 12h14' />
+                          </svg>
+                        </button>
+                        <InputNumber
+                          value={1}
+                          className=''
+                          classNameError='hidden'
+                          classNameInput='h-8 outline-none border-t border-b border-gray-300 w-11 text-center'
+                        />
+                        <button className='mr-6 flex h-8 w-8 items-center justify-center rounded-r-sm border border-gray-300'>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            strokeWidth={1.5}
+                            stroke='currentColor'
+                            className='h-4 w-4'
+                          >
+                            <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
+                          </svg>
+                        </button>
+                        <span className='text-textMall'>10090 sản phẩm có sẵn </span>
+                      </div>
+                    </div>
+                    <div className='mt-14 flex items-center justify-start gap-3'>
+                      <button className='flex h-12 w-fit items-center justify-center space-x-2 rounded-sm border  border-main bg-red-50 px-5 py-4'>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          strokeWidth={1}
+                          stroke='#D0011B'
+                          className='h-6 w-6'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
+                          />
+                        </svg>
+                        <div className='text-main'>Thêm vào giỏ hàng</div>
+                      </button>
+                      <button className='flex h-12 w-fit items-center justify-center space-x-2 rounded-sm bg-main px-9 py-4 hover:bg-main/80 '>
+                        <div className='text-white'>Mua ngay</div>
+                      </button>
+                    </div>
+                  </div>
+                  <div className='mt-7 h-[1px] w-full border-b border-gray-200'></div>
+                  <div className='flex  items-center justify-start p-3'>
+                    <img
+                      className='mr-2 h-5 w-5'
+                      src='https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/83e10a1f95cb083579c089448ef8dd3b.png'
+                      alt=''
+                    />
+                    <div className='mr-6 text-xs'>Shopee đảm bảo</div>
+                    <div className='text-xs capitalize text-textInSort'>3 ngày trả hàng / hoàn tiền</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div className='container mt-4'>
+            <div className='bg-white p-5 shadow-sm'>
+              <div className='bg-mall p-3 uppercase'>Mô tả sản phẩm</div>
+              <div
+                className='m-4 text-sm leading-loose'
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(productData.data.description)
+                }}
+              />
+            </div>
+          </div>
         </div>
+
         <Transition appear show={isOpenSlideImageModal} as={Fragment}>
           <Dialog as='div' className='relative z-10' onClose={closeSlideImageModal}>
             <Transition.Child
@@ -222,7 +349,6 @@ export default function ProductDetail() {
                         <div className='relative w-full pt-[100%]'>
                           <img
                             className='absolute left-0 top-0 h-full w-full bg-white object-cover'
-                            src={mainImage}
                             alt={productData.data.name}
                           />
                           <button className='absolute left-0 top-1/2 z-10 flex h-16 w-9 -translate-y-1/2 items-center justify-center bg-black/20'>
